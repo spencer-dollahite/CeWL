@@ -805,14 +805,14 @@ catch :ctrl_c do
 							puts "Allowing offsite links" if @debug
 						end
 
-						puts "Found: #{a_url_parsed.path}" if @debug
-						if exclude_array.include?(a_url_parsed.path)
-							puts "Excluding path: #{a_url_parsed.path}" if verbose
+						puts "Found: #{a_url_parsed.domain}" if @debug
+						if exclude_array.include?(a_url_parsed.domain)
+							puts "Excluding domain: #{a_url_parsed.domain}" if verbose
 							allow = false
 						end
 
-						if allowed_pattern && !a_url_parsed.path.match(allowed_pattern)
-							puts "Excluding path: #{a_url_parsed.path} based on allowed pattern" if verbose
+						if allowed_pattern && !a_url_parsed.domain.match(allowed_pattern)
+							puts "Excluding domain: #{a_url_parsed.domain} based on allowed pattern" if verbose
 							allow = false
 						end
 					end
