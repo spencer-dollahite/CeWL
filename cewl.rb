@@ -811,7 +811,7 @@ catch :ctrl_c do
 							allow = false
 						end
 
-						if allowed_pattern && !a_url_parsed.host.match(allowed_pattern)
+						if allowed_pattern && !a_url_parsed.match(allowed_pattern)
 							puts "Excluding domain: #{a_url_parsed.host} based on allowed pattern" if verbose
 							allow = false
 						end
