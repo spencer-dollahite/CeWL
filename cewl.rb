@@ -470,8 +470,10 @@ opts = GetoptLong.new(
 		['--no-words', "-n", GetoptLong::NO_ARGUMENT],
 		['--groups', "-g", GetoptLong::REQUIRED_ARGUMENT],
 		['--offsite', "-o", GetoptLong::NO_ARGUMENT],
-		['--exclude', GetoptLong::REQUIRED_ARGUMENT],
-		['--allowed', GetoptLong::REQUIRED_ARGUMENT],
+		['--exclude-path', GetoptLong::REQUIRED_ARGUMENT],
+		['--allowed-path', GetoptLong::REQUIRED_ARGUMENT],
+        ['--exclude-host', GetoptLong::REQUIRED_ARGUMENT],
+		['--allowed-host', GetoptLong::REQUIRED_ARGUMENT],
 		['--write', "-w", GetoptLong::REQUIRED_ARGUMENT],
 		['--ua', "-u", GetoptLong::REQUIRED_ARGUMENT],
 		['--meta-temp-dir', GetoptLong::REQUIRED_ARGUMENT],
@@ -505,8 +507,10 @@ def usage
 	-d <x>,--depth <x>: Depth to spider to, default 2.
 	-m, --min_word_length: Minimum word length, default 3.
 	-o, --offsite: Let the spider visit other sites.
-	--exclude: A file containing a list of paths to exclude
-	--allowed: A regex pattern that path must match to be followed
+	--exclude-path: A file containing a list of paths to exclude
+	--allowed-path: A regex pattern that path must match to be followed
+    --exclude-host: A file containing a list of hosts to exclude
+	--allowed-host: A regex pattern that host must match to be followed
 	-w, --write: Write the output to the file.
 	-u, --ua <agent>: User agent to send.
 	-n, --no-words: Don't output the wordlist.
@@ -551,8 +555,10 @@ outfile = nil
 email_outfile = nil
 meta_outfile = nil
 offsite = false
-exclude_array = []
-allowed_pattern = nil
+exclude_array-path = []
+allowed_pattern-path = nil
+exclude_array-host = []
+allowed_pattern-host = nil
 depth = 2
 min_word_length = 3
 email = false
@@ -629,24 +635,42 @@ begin
 				usage if depth < 0
 			when '--offsite'
 				offsite = true
-			when '--exclude'
+			when '--exclude-path'
 				begin
-					tmp_exclude_array = File.readlines(arg)
+					tmp_exclude_array-path = File.readlines(arg)
 				rescue => e
-					puts "\nUnable to open the excude file\n\n"
+					puts "\nUnable to open the exclude-path file\n\n"
 					exit 1
 				end
 				# Have to do this to strip the newline characters from the end
 				# of each element in the array
-				tmp_exclude_array.each do |line|
+				tmp_exclude_array-path.each do |line|
 					exc = line.strip
 					if exc != ""
-						exclude_array << line.strip
+						exclude_array-path << line.strip
 						# puts "Excluding #{ line.strip}"
 					end
 				end
-			when '--allowed'
-				allowed_pattern = Regexp.new(arg)
+			when '--allowed-path'
+				allowed_pattern-path = Regexp.new(arg)
+            when '--exclude-host'
+				begin
+					tmp_exclude_array-host = File.readlines(arg)
+				rescue => e
+					puts "\nUnable to open the excude-host file\n\n"
+					exit 1
+				end
+				# Have to do this to strip the newline characters from the end
+				# of each element in the array
+				tmp_exclude_array-host.each do |line|
+					exc = line.strip
+					if exc != ""
+						exclude_array-host << line.strip
+						# puts "Excluding #{ line.strip}"
+					end
+				end
+			when '--allowed-host'
+				allowed_pattern-host = Regexp.new(arg)
 			when '--ua'
 				ua = arg
 			when '--debug'
@@ -805,14 +829,25 @@ catch :ctrl_c do
 							puts "Allowing offsite links" if @debug
 						end
 
-						puts "Found: #{a_url_parsed.host}" if @debug
-						if exclude_array.include?(a_url_parsed.host)
-							puts "Excluding domain: #{a_url_parsed.host}" if verbose
+						puts "Found: #{a_url_parsed.path}" if @debug
+						if exclude_array-path.include?(a_url_parsed.path)
+							puts "Excluding path: #{a_url_parsed.path}" if verbose
 							allow = false
 						end
 
-						if allowed_pattern && !a_url.match(allowed_pattern)
-							puts "Excluding domain: #{a_url_parsed.host} based on allowed pattern" if verbose
+						if allowed_pattern-path && !a_url.path.match(allowed_pattern-path)
+							puts "Excluding path: #{a_url_parsed.path} based on allowed-path pattern" if verbose
+							allow = false
+						end
+
+                        puts "Found: #{a_url_parsed.host}" if @debug
+						if exclude_array-host.include?(a_url_parsed.host)
+							puts "Excluding host: #{a_url_parsed.host}" if verbose
+							allow = false
+						end
+
+						if allowed_pattern-host && !a_url.match(allowed_pattern-host)
+							puts "Excluding host: #{a_url_parsed.host} based on allowed-host pattern" if verbose
 							allow = false
 						end
 					end
