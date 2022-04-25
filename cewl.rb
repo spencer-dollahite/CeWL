@@ -472,7 +472,7 @@ opts = GetoptLong.new(
 		['--offsite', "-o", GetoptLong::NO_ARGUMENT],
 		['--exclude-path', GetoptLong::REQUIRED_ARGUMENT],
 		['--allowed-path', GetoptLong::REQUIRED_ARGUMENT],
-        ['--exclude-host', GetoptLong::REQUIRED_ARGUMENT],
+        	['--exclude-host', GetoptLong::REQUIRED_ARGUMENT],
 		['--allowed-host', GetoptLong::REQUIRED_ARGUMENT],
 		['--write', "-w", GetoptLong::REQUIRED_ARGUMENT],
 		['--ua', "-u", GetoptLong::REQUIRED_ARGUMENT],
@@ -509,7 +509,7 @@ def usage
 	-o, --offsite: Let the spider visit other sites.
 	--exclude-path: A file containing a list of paths to exclude
 	--allowed-path: A regex pattern that path must match to be followed
-    --exclude-host: A file containing a list of hosts to exclude
+    	--exclude-host: A file containing a list of hosts to exclude
 	--allowed-host: A regex pattern that host must match to be followed
 	-w, --write: Write the output to the file.
 	-u, --ua <agent>: User agent to send.
@@ -653,7 +653,7 @@ begin
 				end
 			when '--allowed-path'
 				allowed_pattern-path = Regexp.new(arg)
-            when '--exclude-host'
+            		when '--exclude-host'
 				begin
 					tmp_exclude_array-host = File.readlines(arg)
 				rescue => e
@@ -840,7 +840,7 @@ catch :ctrl_c do
 							allow = false
 						end
 
-                        puts "Found: #{a_url_parsed.host}" if @debug
+                        			puts "Found: #{a_url_parsed.host}" if @debug
 						if exclude_array-host.include?(a_url_parsed.host)
 							puts "Excluding host: #{a_url_parsed.host}" if verbose
 							allow = false
