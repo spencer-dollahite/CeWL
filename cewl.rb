@@ -555,10 +555,10 @@ outfile = nil
 email_outfile = nil
 meta_outfile = nil
 offsite = false
-exclude_array-path = []
-allowed_pattern-path = nil
-exclude_array-host = []
-allowed_pattern-host = nil
+exclude_array_path = []
+allowed_pattern_path = nil
+exclude_array_host = []
+allowed_pattern_host = nil
 depth = 2
 min_word_length = 3
 email = false
@@ -637,40 +637,40 @@ begin
 				offsite = true
 			when '--exclude-path'
 				begin
-					tmp_exclude_array-path = File.readlines(arg)
+					tmp_exclude_array_path = File.readlines(arg)
 				rescue => e
 					puts "\nUnable to open the exclude-path file\n\n"
 					exit 1
 				end
 				# Have to do this to strip the newline characters from the end
 				# of each element in the array
-				tmp_exclude_array-path.each do |line|
+				tmp_exclude_array_path.each do |line|
 					exc = line.strip
 					if exc != ""
-						exclude_array-path << line.strip
+						exclude_array_path << line.strip
 						# puts "Excluding #{ line.strip}"
 					end
 				end
 			when '--allowed-path'
-				allowed_pattern-path = Regexp.new(arg)
+				allowed_pattern_path = Regexp.new(arg)
             		when '--exclude-host'
 				begin
-					tmp_exclude_array-host = File.readlines(arg)
+					tmp_exclude_array_host = File.readlines(arg)
 				rescue => e
 					puts "\nUnable to open the excude-host file\n\n"
 					exit 1
 				end
 				# Have to do this to strip the newline characters from the end
 				# of each element in the array
-				tmp_exclude_array-host.each do |line|
+				tmp_exclude_array_host.each do |line|
 					exc = line.strip
 					if exc != ""
-						exclude_array-host << line.strip
+						exclude_array_host << line.strip
 						# puts "Excluding #{ line.strip}"
 					end
 				end
 			when '--allowed-host'
-				allowed_pattern-host = Regexp.new(arg)
+				allowed_pattern_host = Regexp.new(arg)
 			when '--ua'
 				ua = arg
 			when '--debug'
@@ -830,23 +830,23 @@ catch :ctrl_c do
 						end
 
 						puts "Found: #{a_url_parsed.path}" if @debug
-						if exclude_array-path.include?(a_url_parsed.path)
+						if exclude_array_path.include?(a_url_parsed.path)
 							puts "Excluding path: #{a_url_parsed.path}" if verbose
 							allow = false
 						end
 
-						if allowed_pattern-path && !a_url.path.match(allowed_pattern-path)
+						if allowed_pattern_path && !a_url.path.match(allowed_pattern_path)
 							puts "Excluding path: #{a_url_parsed.path} based on allowed-path pattern" if verbose
 							allow = false
 						end
 
                         			puts "Found: #{a_url_parsed.host}" if @debug
-						if exclude_array-host.include?(a_url_parsed.host)
+						if exclude_array_host.include?(a_url_parsed.host)
 							puts "Excluding host: #{a_url_parsed.host}" if verbose
 							allow = false
 						end
 
-						if allowed_pattern-host && !a_url.match(allowed_pattern-host)
+						if allowed_pattern_host && !a_url.match(allowed_pattern_host)
 							puts "Excluding host: #{a_url_parsed.host} based on allowed-host pattern" if verbose
 							allow = false
 						end
